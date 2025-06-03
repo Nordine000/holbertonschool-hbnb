@@ -2,16 +2,23 @@ classDiagram
 class PresentationLayer {
     <<Interface>>
     +ServiceAPI
+    +ServiceUser
+    +ServiceReview
+    +ServicePlace
+    +ServiceAmenity
 }
 class BusinessLogicLayer {
     +FacadeBL <<Facade>>
-    +Models (User, Place, Review, Amenity)
-    +CoreLogicoreLogic
+    +User
+    +Place
+    +Review, 
+    +Amenity
 }
 class PersistenceLayer {
-    +FacadeDB <<Facade>>
-    +DatabaseAccess
+    +UserRepository
+    +PlaceRepository
+    +ReviewRepository
+    +AmenityRepository
 }
 PresentationLayer --> BusinessLogicLayer : Facade Pattern
 BusinessLogicLayer --> PersistenceLayer : Database Operations
-
