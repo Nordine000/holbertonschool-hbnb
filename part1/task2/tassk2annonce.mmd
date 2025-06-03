@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant Client
+    participant API as Presentation Layer<br/>(ServiceAPI)
+    participant BL as Business Logic Layer<br/>(FacadeBL)
+    participant PlaceModel as Place Model
+    participant UserModel as User Model
+    participant AmenityModel as Amenity Model
+    participant DB as Persistence Layer<br/>(FacadeDB)
+
+    Client->>API: POST /places<br/>{title, description, price, latitude, longitude, amenities, ownerId}
+    API->>BL: createPlace(placeData)
+    BL->>UserModel: verifyUserExists(ownerId)
+    UserModel->>DB: getUserById(ownerId)
+    DB-->>UserModel: user data
+    UserModel-->>BL: user verified
+    
+    BL->>PlaceModel: validatePlaceData(placeData)
+    PlaceModel-->>BL: validation result
+    
+    alt validation successful
+        BL->>AmenityModel: validateAmenities(amenityIds)
+        AmenityModel->>DB: checkAmenitiesExist(amenityIds)
+        DB-->>AmenityModel: amenities validation
+        AmenityModel-->>BL: amenities validated
+        
+        BL->>PlaceModel: createPlace(placeData)
+        PlaceModel->>PlaceModel: generateUniqueId()
+        PlaceModel->>PlaceModel: setCreationDateTime()
+        BL->>DB: savePlace(placeObject)
+        DB->>DB: insertPlaceToDatabase()
+        DB->>DB: linkPlaceToAmenities()
+        DB-->>BL: place saved successfully
+        BL-->>API: place created with ID
+        API-->>Client: 201 Created<br/>{placeId, message: "Place created"}
+    else validation failed
+        BL-->>API: validation errors
+        API-->>Client: 400 Bad Request<br/>{errors}
+    end
