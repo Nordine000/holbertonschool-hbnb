@@ -2,40 +2,32 @@ classDiagram
 class User {
     +UUID
     +lastName : string
-    +firstName: strig
+    +firstName: string
     +password: string
     +created_ad
     +update_ad
 }
 class Place {
     +UUID
-    +lastName : string
-    +firstName: strig
-    +password: string
-    +created_ad
-    +update_ad
+    +title
+    +description
+    +price
+    +latitude
+    +longitude
 }
 class Review {
     +UUID
-    +lastName : string
-    +firstName: strig
-    +password: string
-    +created_ad
-    +update_ad
+    +place
+    +user
+    +rating
+    +comment
 }
 class Amenity {
     +UUID
-    +lastName : string
-    +firstName: strig
-    +password: string
-    +created_ad
-    +update_ad
+    +name
+    +description
 }
-
-class ClassName {
-    +AttributeType attributeName
-    +MethodType methodName()
-}
-ClassName1 --|> ClassName2 : Inheritance
-ClassName3 o-- ClassName : Composition
-ClassName4 --> ClassName : Association
+Place --|> User : Inheritance
+Review o-- User : Composition
+Review --> Place : Association
+Place o-- Amenity : Composition
