@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant Client
+    participant API as Presentation Layer<br/>(ServiceAPI)
+    participant BL as Business Logic Layer<br/>(FacadeBL)
+    participant Model as User Model
+    participant DB as Persistence Layer<br/>(FacadeDB)
+
+    Client->>API: POST /users<br/>{firstName, lastName, email, password}
+    API->>BL: registerUser(userData)
+    BL->>Model: validateUserData(userData)
+    Model-->>BL: validation result
+    
+    alt validation successful
+        BL->>Model: createUser(userData)
+        Model->>Model: hashPassword()
+        Model->>Model: generateUniqueId()
+        Model->>Model: setCreationDateTime()
+        BL->>DB: saveUser(userObject)
+        DB->>DB: checkEmailUniqueness()
+        DB->>DB: insertUserToDatabase()
+        DB-->>BL: user saved successfully
+        BL-->>API: user created with ID
+        API-->>Client: 201 Created<br/>{userId, message: "User registered"}
+    else validation failed
+        BL-->>API: validation errors
+        API-->>Client: 400 Bad Request<br/>{errors}
+    end
