@@ -1,32 +1,43 @@
 classDiagram
-class User {
-    +UUID
-    +lastName : string
-    +firstName: string
-    +password: string
-    +created_ad
-    +update_ad
+    class User {
+        +id : UUID
+        +lastName : str
+        +firstName: st
+        +password: str
+        +email : str
+        +created_ad : str
+        +update_ad : str
 }
-class Place {
-    +UUID
-    +title
-    +description
-    +price
-    +latitude
-    +longitude
+    class Place {
+        +id : UUID
+        +title : str
+        +description : str
+        +price : int
+        +latitude : float
+        +longitude : float
+        +latitude: float
+        +longitude: float
+        +created_at: datetime
+        +updated_at: datetime
 }
-class Review {
-    +UUID
-    +place
-    +user
-    +rating
-    +comment
+    class Review {
+        +id : UUID
+        +place : str
+        +user : str
+        +rating : str
+        +comment : str
 }
-class Amenity {
-    +UUID
-    +name
-    +description
+    class Amenity {
+        +id : UUID
+        +name: string
+        +description: string
+        +created_at: datetime
+        +updated_at: datetime
+        +create_at: void
+        +update_at: void
+        +delete_at: void
 }
+
 Place --|> User : Inheritance
 Review o-- User : Composition
 Review --> Place : Association
