@@ -38,7 +38,7 @@ classDiagram
         +delete_at: void
 }
 
-Place --|> User : Inheritance
-Review o-- User : Composition
+Place --> User : Association
+Review --> User : Association
 Review --> Place : Association
-Place o-- Amenity : Composition
+Place o-- Amenity : Aggregation
