@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 from uuid import uuid4
 from datetime import datetime
+from .base_model import BaseModel
 
-
-class User:
+class User(BaseModel):
     def __init__(self, first_name, last_name, email, is_admin=False, created_at=None, updated_at=None, id=None):
         self.__id__ = str(uuid4())
         self.first_name = first_name

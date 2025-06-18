@@ -1,16 +1,25 @@
 #!/usr/bin/python3
 from uuid import uuid4
 from datetime import datetime
-from user import User
+from .user import User
+from .base_model import BaseModel
 
-class Place:
-    def __init__(self, title, price, latitude, longitude, owner, description="",created_at=None, updated_at=None, id=None):
-        self.__id__ = str(uuid4())
+class Place(BaseModel):
+    def __init__(self, title, description, price, latitude, longitude, owner):
+        super().__init__()
         self.title = title
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.__created_at__ = datetime.now()
-        self.__updated_at = datetime.now()
+        self.reviews = []  # List to store related reviews
+        self.amenities = []  # List to store related amenities
+
+    def add_review(self, review):
+        """Add a review to the place."""
+        self.reviews.append(review)
+
+    def add_amenity(self, amenity):
+        """Add an amenity to the place."""
+        self.amenities.append(amenity)
