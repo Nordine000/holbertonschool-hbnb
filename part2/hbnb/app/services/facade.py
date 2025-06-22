@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
+from app.models.review import Review
 
 class HBnBFacade:
     def __init__(self):
@@ -173,3 +174,51 @@ class HBnBFacade:
             if amenity:
                 amenities.append(amenity)
         return amenities
+    
+    def create_review(self, review_data):
+        required_fields = ['user_id', 'place_id', 'rating', 'comment']
+        for field in required_fields:
+            if field not in review_data:
+                raise ValueError(f"{field} is required")
+
+        user = self.user_repo.get(review_data['user_id'])
+        if not user:
+            raise ValueError("User not found")
+
+        place = self.place_repo.get(review_data['place_id'])
+        if not place:
+            raise ValueError("Place not found")
+
+        review = Review(
+            user=user,
+            place=place,
+            rating=review_data['rating'],
+            comment=review_data['comment']
+            )
+        self.review_repo.add(review)
+        return review
+    
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+    
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return [r for r in self.review_repo.get_all() if r.place_id == place_id]
+
+    def update_review(self, review_id, review_data):
+        review = self.review_repo.get(review_id)
+        if not review:
+            return None
+
+        if 'rating' in review_data:
+            review.rating = review_data['rating']
+        if 'comment' in review_data:
+            review.comment = review_data['comment']
+
+        self.review_repo.update(review_id, review)
+        return review
+
+    def delete_review(self, review_id):
+        return self.review_repo.delete(review_id)
