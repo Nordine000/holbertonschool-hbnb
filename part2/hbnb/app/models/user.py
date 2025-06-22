@@ -11,9 +11,10 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+        self.place = []
         
         """verifie l'id"""
-        if not isinstance(id, str):
+        if not isinstance(self.id, str):
             raise TypeError("ID error")
         """verifie first name"""
         if not isinstance(first_name, str):
