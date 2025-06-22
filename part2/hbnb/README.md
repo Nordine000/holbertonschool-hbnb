@@ -14,8 +14,8 @@ Cette partie du projet **HBnB** consiste à transformer une conception logiciell
 
 ## 🗂 Structure du Projet
 
-<pre lang="markdown">
-```text
+
+```bash
 hbnb/
 ├── app/
 │   ├── api/v1/          # Couche Présentation (endpoints Flask RESTx)
