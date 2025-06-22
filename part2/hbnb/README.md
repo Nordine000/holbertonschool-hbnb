@@ -14,7 +14,7 @@ Cette deuxième partie du projet **HBnB** consiste à transformer une conception
 
 ## 🗂️ Structure du Projet
 
-```
+```mermaid
 hbnb/
 ├── app/
 │   ├── api/
@@ -45,7 +45,7 @@ hbnb/
 
 Un **modèle de conception Façade** centralise les interactions entre les couches de **Présentation**, **Logique métier** et **Persistance** :
 
-```
+```mermaid
 [ Flask RESTx Routes ]
          ↓
 [ API Handlers ]
