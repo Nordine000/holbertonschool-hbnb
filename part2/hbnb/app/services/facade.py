@@ -119,7 +119,8 @@ class HBnBFacade:
             self.place_repo.add(place)
             return place
         except ValueError as e:
-            raise ValueError(f"Invalid place data: {str(e)}")
+            print(f"[Erreur] Données invalides pour Place → {str(e)}")
+            return {"error": str(e)}
 
     def get_place(self, place_id):
         """Retrieve a place by ID, including associated owner and amenities"""
