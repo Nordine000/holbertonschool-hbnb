@@ -27,11 +27,15 @@ class Place(BaseModel):
         if len(description) > 50:
             raise ValueError("Longueur max 50")
         """verifie l'email avec validation format"""
-        if not isinstance(price, float):
+        if not isinstance(price, (float, int)):
             raise TypeError("L'email est obligatoire")
-        """verifie si c'est un damin"""
-        if not isinstance(latitude, float):
-            raise TypeError("Tu n'est pas admin")
+        """verifie si c'est un la latitude"""
+        if not isinstance(latitude, (float, int)):
+            raise TypeError("La latitude doit etre un nombre")
+        if not isinstance(longitude, (float, int)):
+            raise TypeError("La longitude doit être un nombre.")
+        if not isinstance(owner, User):
+            raise TypeError("Le propriétaire doit être une instance de User.")
 
     def add_review(self, review):
         """Add a review to the place."""
