@@ -12,6 +12,8 @@ class User(BaseModel):
         self.email = email
         self.is_admin = is_admin
         self.place = []
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
         
         """verifie l'id"""
         if not isinstance(self.id, str):
@@ -39,3 +41,35 @@ class User(BaseModel):
         
     def add_place(self, place):
         self.place.append(place)
+    
+    @property
+    def email(self):
+        return self._email
+    
+    @email.setter
+    def email(self, value):
+        """Validate email format"""
+        import re
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, value):
+            raise ValueError("Invalid email format")
+        self._email = value
+    
+    def update(self, data):
+        """Update user attributes"""
+        if 'first_name' in data:
+            self.first_name = data['first_name']
+        if 'last_name' in data:
+            self.last_name = data['last_name']
+        if 'email' in data:
+            self.email = data['email']  # Uses setter validation
+        self.updated_at = datetime.now()
+    
+    def to_dict(self):
+        """Convert user object to dictionary"""
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'created_at': self.created_at.isoformat(),}
