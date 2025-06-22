@@ -2,6 +2,7 @@ from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services import facade
 
+
 api = Namespace('amenities', description='Amenity operations')
 
 # Define the amenity model for input validation and documentation
