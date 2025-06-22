@@ -89,3 +89,38 @@ La façade permet une **abstraction centrale** des règles métier et une sépar
 ---
 
 ## ✅ Validation & Gestion des erreurs
+
+Chaque entité applique des règles métier :
+
+- **User** : email unique, prénom/nom requis, format email valide
+- **Place** : titre requis, `price` > 0, coordonnées `latitude/longitude` valides
+- **Review** : texte obligatoire, `rating` entre 1–5, lien à user/place vérifié
+
+Codes HTTP standards : `200`, `201`, `400`, `404`
+
+---
+
+## 🧪 Tests et documentation
+
+- Swagger UI dispo à : [`/api/v1/`](http://localhost:5000/api/v1/)
+- Tests `curl`, Postman et automatisés (`unittest`)
+- Cas positifs, erreurs attendues, validations
+
+---
+
+## 🚀 Lancer l’application
+
+```bash
+pip install -r requirements.txt
+python run.py
+```
+
+---
+
+## 📚 Ressources
+
+- [Flask](https://flask.palletsprojects.com/)
+- [Flask-RESTx](https://flask-restx.readthedocs.io/)
+- [Mermaid](https://mermaid.js.org/)
+
+---
