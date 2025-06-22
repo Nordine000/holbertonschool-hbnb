@@ -34,3 +34,7 @@ class User(BaseModel):
         """verifie si c'est un damin"""
         if not isinstance(is_admin, bool):
             raise TypeError("Tu n'est pas admin")
+        
+        
+    def add_place(self, place):
+        self.place.append(place)
