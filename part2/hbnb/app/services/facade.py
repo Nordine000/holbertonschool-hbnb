@@ -79,11 +79,10 @@ class HBnBFacade:
                     existing_amenity.name.lower() == new_name.lower()):
                     raise ValueError("Amenity with this name already exists")
 
-        #Ce bloc est maintenant en dehors de la boucle
-        try:
-            amenity.name = new_name
-        except Exception as e:
-            raise ValueError(f"Invalid name: {str(e)}")
+            try:
+                amenity.name = new_name
+            except Exception as e:
+                raise ValueError(f"Invalid name: {str(e)}")
 
         self.amenity_repo.update(amenity_id, amenity)
         return amenity
