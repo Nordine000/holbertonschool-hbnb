@@ -64,25 +64,28 @@ class HBnBFacade:
 
     def update_amenity(self, amenity_id, amenity_data):
         """Update an amenity"""
-        # Get existing amenity
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return None
-        
-        # Validate new name if provided
+
         if 'name' in amenity_data:
-            if not amenity_data['name']:
+            new_name = amenity_data['name']
+            if not new_name:
                 raise ValueError("Amenity name cannot be empty")
-            
-            # Check if another amenity with same name already exists
-            existing_amenities = self.amenity_repo.get_all()
-            for existing_amenity in existing_amenities:
-                if (existing_amenity.id != amenity_id and 
-                    existing_amenity.name.lower() == amenity_data['name'].lower()):
-                    raise ValueError("Amenity with this name already exists")
-            
-            amenity.name = amenity_data['name']
-        
+
+        # Vérifie les doublons
+        existing_amenities = self.amenity_repo.get_all()
+        for existing_amenity in existing_amenities:
+            if (existing_amenity.id != amenity_id and 
+                existing_amenity.name.lower() == new_name.lower()):
+                raise ValueError("Amenity with this name already exists")
+
+        # ✅ Ce bloc est maintenant en dehors de la boucle
+        try:
+            amenity.name = new_name
+        except Exception as e:
+            raise ValueError(f"Invalid name: {str(e)}")
+
         self.amenity_repo.update(amenity_id, amenity)
         return amenity
 
