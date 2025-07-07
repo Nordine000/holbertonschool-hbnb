@@ -26,7 +26,12 @@ class Amenity(BaseModel):
         }
     
     def update(self, data):
-        """Update amenity attributes"""
+        """Update amenity attributes with validation"""
         if 'name' in data:
-            self.name = data['name']
+            name = data['name']
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("Le nom de l'équipement doit être une chaîne non vide.")
+        if len(name) > 100:
+            raise ValueError("Le nom ne peut pas dépasser 100 caractères.")
+        self.name = name
         self.updated_at = datetime.now()
