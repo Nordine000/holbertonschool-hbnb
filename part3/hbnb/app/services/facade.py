@@ -193,7 +193,7 @@ class HBnBFacade:
             user=user,
             place=place,
             rating=review_data['rating'],
-            text=review_data['comment']
+            comment=review_data['comment']
             )
         self.review_repo.add(review)
         return review

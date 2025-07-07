@@ -9,7 +9,6 @@ class User(BaseModel):
         super().__init__()
         self.first_name = first_name
         self.last_name = last_name
-        self._email = None
         self.email = email
         self.is_admin = is_admin
         self.place = []
@@ -73,5 +72,4 @@ class User(BaseModel):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat(),}
+            'created_at': self.created_at.isoformat(),}

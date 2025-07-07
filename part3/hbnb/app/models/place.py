@@ -12,23 +12,24 @@ class Place(BaseModel):
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
+        self.owner = owner.id
         self.owner_id = owner.id
         self.reviews = []  # List to store related reviews
         self.amenities = []  # List to store related amenities
 
         """verifie le titre"""
         if not isinstance(title, str) or not title:
-            raise ValueError("Titre invalide")
+            raise ValueError("Titre du lieu")
         if len(title) > 100:
             raise ValueError("Longueur max 100")
         """verifie description"""
         if not isinstance(description, str) or not description:
-            raise ValueError("Description invalide")
+            raise ValueError("Nom obligatoire")
         if len(description) > 50:
             raise ValueError("Longueur max 50")
         """verifie l'email avec validation format"""
         if not isinstance(price, (float, int)):
-            raise TypeError("Le prix doit être un nombre")
+            raise TypeError("L'email est obligatoire")
         """verifie si c'est un la latitude"""
         if not isinstance(latitude, (float, int)):
             raise TypeError("La latitude doit etre un nombre")
