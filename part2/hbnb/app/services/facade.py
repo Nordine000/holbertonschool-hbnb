@@ -84,7 +84,7 @@ class HBnBFacade:
             except Exception as e:
                 raise ValueError(f"Invalid name: {str(e)}")
 
-        self.amenity_repo.update(amenity_id, amenity)
+        self.amenity_repo.update(amenity_id, amenity_data)
         return amenity
 
     def create_place(self, place_data):
