@@ -118,7 +118,7 @@ class HBnBFacade:
             latitude=place_data['latitude'],
             longitude=place_data['longitude'],
             owner=owner,
-            reviews=[]
+            reviews=[],
             amenities=amenities
             )
             self.place_repo.add(place)
