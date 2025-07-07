@@ -109,19 +109,21 @@ class HBnBFacade:
         
         # Create place (validation happens in the constructor via setters)
         try:
+            print(f"[DEBUG] owner: {owner}, type: {type(owner)}")
+
             place = Place(
-                title=place_data['title'],
-                description=place_data.get('description', ''),
-                price=place_data['price'],
-                latitude=place_data['latitude'],
-                longitude=place_data['longitude'],
-                owner=owner,
+            title=place_data['title'],
+            description=place_data.get('description', ''),
+            price=place_data['price'],
+            latitude=place_data['latitude'],
+            longitude=place_data['longitude'],
+            owner=owner,
             amenities=amenities
             )
             self.place_repo.add(place)
             return place
-        except ValueError as e:
-            print(f"[Erreur] Données invalides pour Place → {str(e)}")
+        except Exception as e:
+            print(f"[Erreur] Exception levée : {e}")
             return {"error": str(e)}
 
     def get_place(self, place_id):
