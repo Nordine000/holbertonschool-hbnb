@@ -226,7 +226,11 @@ class HBnBFacade:
         if 'comment' in review_data:
             review.comment = review_data['comment']
 
-        self.review_repo.update(review_id, review)
+        self.review_repo.update(review_id, {
+    "rating": review.rating,
+    "comment": review.comment
+})
+
         return review
 
     def delete_review(self, review_id):
