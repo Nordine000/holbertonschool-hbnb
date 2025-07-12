@@ -6,12 +6,12 @@ from .place import Place
 from .base_model import BaseModel
 
 class Review(BaseModel):
-    def __init__(self, text, place, rating=int, user=User):
+    def __init__(self, text, place, rating, user):
         super().__init__()
         self.text = text
-        self.place = place
-        self.rating = rating
-        self.user = user
+        self.place_id = place.id
+        self.rating = float(rating)
+        self.user_id = user.id
 
 
         """verifie le texte"""

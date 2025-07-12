@@ -1,7 +1,7 @@
+# api/v1/amenities.py
 from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services import facade
-
 
 api = Namespace('amenities', description='Amenity operations')
 
@@ -105,4 +105,4 @@ class AmenityResource(Resource):
         except ValueError as e:
             return {'error': str(e)}, 400
         except Exception as e:
-            return {'error': 'An error occurred while updating the amenity'}, 400
+            return {'error': f'Unexpected error: {str(e)}'}, 400

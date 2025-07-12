@@ -64,26 +64,27 @@ class HBnBFacade:
 
     def update_amenity(self, amenity_id, amenity_data):
         """Update an amenity"""
-        # Get existing amenity
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return None
-        
-        # Validate new name if provided
+
         if 'name' in amenity_data:
-            if not amenity_data['name']:
+            new_name = amenity_data['name']
+            if not new_name:
                 raise ValueError("Amenity name cannot be empty")
-            
-            # Check if another amenity with same name already exists
+            # Vérifie les doublons
             existing_amenities = self.amenity_repo.get_all()
             for existing_amenity in existing_amenities:
                 if (existing_amenity.id != amenity_id and 
-                    existing_amenity.name.lower() == amenity_data['name'].lower()):
+                    existing_amenity.name.lower() == new_name.lower()):
                     raise ValueError("Amenity with this name already exists")
-            
-            amenity.name = amenity_data['name']
-        
-        self.amenity_repo.update(amenity_id, amenity)
+
+            try:
+                amenity.name = new_name
+            except Exception as e:
+                raise ValueError(f"Invalid name: {str(e)}")
+
+        self.amenity_repo.update(amenity_id, amenity_data)
         return amenity
 
     def create_place(self, place_data):
@@ -108,20 +109,28 @@ class HBnBFacade:
         
         # Create place (validation happens in the constructor via setters)
         try:
+            print(f"[DEBUG] owner: {owner}, type: {type(owner)}")
+
             place = Place(
-                title=place_data['title'],
-                description=place_data.get('description', ''),
-                price=place_data['price'],
-                latitude=place_data['latitude'],
-                longitude=place_data['longitude'],
-                owner_id=place_data['owner_id'],
-                amenities=amenities
+            title=place_data['title'],
+            description=place_data.get('description', ''),
+            price=place_data['price'],
+            latitude=place_data['latitude'],
+            longitude=place_data['longitude'],
+            owner=owner,
             )
+            for amenity_id in place_data.get('amenities', []):
+                place.add_amenity(amenity_id)
+
             self.place_repo.add(place)
             return place
-        except ValueError as e:
-            print(f"[Erreur] Données invalides pour Place → {str(e)}")
+        except Exception as e:
+            print(f"[Erreur] Exception levée : {e}")
             return {"error": str(e)}
+        except Exception as e:
+            print(f"[Erreur] Exception levée : {e}")
+            raise
+
 
     def get_place(self, place_id):
         """Retrieve a place by ID, including associated owner and amenities"""
@@ -193,7 +202,7 @@ class HBnBFacade:
             user=user,
             place=place,
             rating=review_data['rating'],
-            comment=review_data['comment']
+            text=review_data['comment']
             )
         self.review_repo.add(review)
         return review
@@ -217,7 +226,10 @@ class HBnBFacade:
         if 'comment' in review_data:
             review.comment = review_data['comment']
 
-        self.review_repo.update(review_id, review)
+        self.review_repo.update(review_id, {
+            "rating": review.rating,
+            "comment": review.comment
+        })
         return review
 
     def delete_review(self, review_id):

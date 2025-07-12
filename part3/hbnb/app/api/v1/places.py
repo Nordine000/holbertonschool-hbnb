@@ -63,7 +63,7 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
-place_model = api.model('Place', {
+place_full_model = api.model('PlaceFull', { 
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
     'price': fields.Float(required=True, description='Price per night'),
@@ -73,7 +73,7 @@ place_model = api.model('Place', {
     'owner': fields.Nested(user_model, description='Owner of the place'),
     'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
     'reviews': fields.List(fields.Nested(review_model), description='List of reviews')
-})
+    })
 
 @api.route('/')
 class PlaceList(Resource):
