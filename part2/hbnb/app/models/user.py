@@ -5,7 +5,7 @@ from .base_model import BaseModel
 import re
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False):
+    def __init__(self, first_name, last_name, email, is_admin=False, id=None):
         super().__init__()
         self.first_name = first_name
         self.last_name = last_name
@@ -13,12 +13,12 @@ class User(BaseModel):
         self.email = email
         self.is_admin = is_admin
         self.place = []
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if id:
+            self.id = id
         
         """verifie l'id"""
-        if not isinstance(self.id, str):
-            raise TypeError("ID error")
+        if id is not None and not isinstance(id, str):
+            raise TypeError("id doit être une chaîne de caractères")
         """verifie first name"""
         if not isinstance(first_name, str):
             raise ValueError("Prénom de l'user incorrect")

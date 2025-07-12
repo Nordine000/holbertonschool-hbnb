@@ -118,14 +118,19 @@ class HBnBFacade:
             latitude=place_data['latitude'],
             longitude=place_data['longitude'],
             owner=owner,
-            reviews=[],
-            amenities=amenities
             )
+            for amenity_id in place_data.get('amenities', []):
+                place.add_amenity(amenity_id)
+
             self.place_repo.add(place)
             return place
         except Exception as e:
             print(f"[Erreur] Exception levée : {e}")
             return {"error": str(e)}
+        except Exception as e:
+            print(f"[Erreur] Exception levée : {e}")
+            raise
+
 
     def get_place(self, place_id):
         """Retrieve a place by ID, including associated owner and amenities"""
