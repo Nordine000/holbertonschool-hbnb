@@ -1,5 +1,9 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from models.user import User
+from flask_jwt_extended import jwt_required
+
+
 
 api = Namespace('users', description='User operations')
 
@@ -20,18 +24,27 @@ class UserList(Resource):
     def post(self):
         """Register a new user"""
         user_data = api.payload
+        password = user_data.pop('password')  # Retire le mot de passe en clair
+        user = User(
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email']
+        )
+        user.hash_password(password)
+
 
         # Simulate email uniqueness check (to be replaced by real validation with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
-        new_user = facade.create_user(user_data)
-        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
+        new_user = facade.user_repository.add(user)
+        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email }, 201
     
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def get(self):
         users = facade.get_all_users()
         return [{"id": user.id, "first_name": user.first_name, "last_name": user.last_name, "email": user.email}
@@ -44,6 +57,7 @@ class UserList(Resource):
 class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
     @api.response(404, 'User not found')
+    @jwt_required()
     def get(self, user_id):
         """Get user details by ID"""
         user = facade.get_user(user_id)
@@ -54,6 +68,7 @@ class UserResource(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def put(self, user_id):
         update_data = api.payload
         user = facade.get_user(user_id)
