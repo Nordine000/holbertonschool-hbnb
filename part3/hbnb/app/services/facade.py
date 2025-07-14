@@ -3,6 +3,11 @@ from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+from persistence.repository import InMemoryRepository
+from models.user import User
+from app.services.user_facade import UserFacade
+
+
 
 class HBnBFacade:
     def __init__(self):
@@ -15,25 +20,49 @@ class HBnBFacade:
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repository.add(user)
-        return user
+        user = User(
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            email=user_data['email'],
+            password=user_data['password']
+        )
+        return self.user_repository.add(user)
 
+    def get_user(self, user_id):
+            """Get user by ID"""
+            return self.user_repository.get(user_id)
+    
     def get_user_by_id(self, user_id):
         return self.user_repository.get(user_id)
-
-    def get_all_users(self):
-        return self.user_repository.get_all()
     
     def get_user_by_email(self, email):
-        return self.user_repository.get_by_attribute('email', email)
+        users = self.user_repository.get_all()
+        for user in users:
+            if user.email == email:
+                return user
+        return None
+    
+    def get_all_users(self):
+        """Get all users"""
+        return self.user_repository.get_all()
     
     def update_user(self, user_id, update_data):
         user = self.get_user(user_id)
         if not user:
             return None
+    
         for key, value in update_data.items():
             setattr(user, key, value)
+            
         self.user_repository.update(user_id, update_data)
         return user
+        
+    
+    def delete_user(self, user_id):
+        """Delete a user"""
+        return self.user_repository.delete(user_id)
+    
+    facade = UserFacade()
 
 #--------------------AMENITY-----------------------------------------------------
 
@@ -241,3 +270,4 @@ class HBnBFacade:
 
     def delete_review(self, review_id):
         return self.review_repository.delete(review_id)
+
