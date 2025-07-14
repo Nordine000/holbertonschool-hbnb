@@ -231,6 +231,13 @@ class HBnBFacade:
             "comment": review.comment
         })
         return review
+    
+    def get_review_by_user_and_place(self, user_id, place_id):
+        """Returns the review if the user has already reviewed the given place"""
+        for review in self.review_repo.get_all():
+            if review.user_id == user_id and review.place_id == place_id:
+                return review
+        return None
 
     def delete_review(self, review_id):
         return self.review_repo.delete(review_id)
