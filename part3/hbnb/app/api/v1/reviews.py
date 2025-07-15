@@ -100,7 +100,8 @@ class ReviewResource(Resource):
         if not review:
             return {"error": "Review not found"}, 404
 
-        if review.user_id != current_user['id']:
+        is_admin = current_user.get('is_admin', False)
+        if not is_admin and review.user_id != current_user['id']:
             return {"error": "Action non autorisée"}, 403
         
         try:
@@ -127,8 +128,10 @@ class ReviewResource(Resource):
         if not review:
             return {"error": "Review not found"}, 404
 
-        if review.user_id != current_user['id']:
+        is_admin = current_user.get('is_admin', False)
+        if not is_admin and review.user_id != current_user['id']:
             return {"error": "Action non autorisée"}, 403
+
         
         deleted = facade.delete_review(review_id)
         if not deleted:

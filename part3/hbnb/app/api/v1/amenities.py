@@ -2,7 +2,7 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
 from app.services import facade
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('amenities', description='Amenity operations')
 
@@ -24,6 +24,12 @@ class AmenityList(Resource):
     @api.response(400, 'Invalid input data')
     @jwt_required()
     def post(self):
+
+        """Register a new amenity (admin only)"""
+        current_user = get_jwt_identity()
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+        
         """Register a new amenity"""
         try:
             # Get data from request
@@ -91,6 +97,12 @@ class AmenityResource(Resource):
     @api.response(400, 'Invalid input data')
     @jwt_required()
     def put(self, amenity_id):
+
+        """Update an amenity's information (admin only)"""
+        current_user = get_jwt_identity()
+        if not current_user.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+        
         """Update an amenity's information"""
         try:
             # Get data from request
