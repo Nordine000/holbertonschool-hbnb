@@ -2,8 +2,15 @@
 from uuid import uuid4
 from datetime import datetime
 from .base_model import BaseModel
+from app import db
 
 class Amenity(BaseModel):
+
+    """Represents an Amenity, Aggregated with Place"""
+    __tablename__ = 'amenities'
+
+    name = db.Column(db.String(100), nullable=False)
+
     def __init__(self, name):
         super().__init__()
         self.name = name

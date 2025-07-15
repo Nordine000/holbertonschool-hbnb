@@ -3,8 +3,18 @@ from uuid import uuid4
 from datetime import datetime
 from .user import User
 from .base_model import BaseModel
+from app import db
 
 class Place(BaseModel):
+    """Represents a place that can be rented in the HbnB app"""
+    __tablename__ = 'places'
+
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+
     def __init__(self, title, description, price, latitude, longitude, owner):
         super().__init__()
         self.title = title
