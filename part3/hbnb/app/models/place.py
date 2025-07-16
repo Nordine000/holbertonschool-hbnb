@@ -5,6 +5,11 @@ from .user import User
 from .base_model import BaseModel
 from app import db
 
+place_amenity = db.Table('place_amenity',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
+
 class Place(BaseModel):
     """Represents a place that can be rented in the HbnB app"""
     __tablename__ = 'places'
@@ -14,6 +19,9 @@ class Place(BaseModel):
     price = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    reviews = db.relationship('Review', backref='reviewed_place', lazy=True)
+    amenities = db.relationship('Amenity', secondary=place_amenity, backref=db.backref('places', lazy=True), lazy='subquery')
 
     def __init__(self, title, description, price, latitude, longitude, owner):
         super().__init__()
