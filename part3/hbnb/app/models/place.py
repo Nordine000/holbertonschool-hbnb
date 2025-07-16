@@ -4,8 +4,6 @@ from datetime import datetime
 from .user import User
 from .base_model import BaseModel
 from app import db
-from app.persistence.amenity_repository import AmenityRepository
-
 
 place_amenity = db.Table('place_amenity',
     db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
@@ -33,7 +31,9 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.user_id = owner.id
-        
+        self.reviews = []  # List to store related reviews
+        self.amenities = []  # List to store related amenities
+
         """verifie le titre"""
         if not isinstance(title, str) or not title:
             raise ValueError("Titre invalide")
@@ -119,11 +119,8 @@ class Place(BaseModel):
         if 'longitude' in data:
             self.longitude = data['longitude']  # Uses setter validation
         if 'amenities' in data:
-            amenity_repo = AmenityRepository()
-        self.amenities = [
-            amenity_repo.get(aid) for aid in data['amenities']
-            if amenity_repo.get(aid) is not None
-        ]
+            self.amenities = data['amenities']
+        self.updated_at = datetime.now()
     
     def to_dict(self):
         """Convert place object to dictionary"""
@@ -134,7 +131,7 @@ class Place(BaseModel):
             'price': self.price,
             'latitude': self.latitude,
             'longitude': self.longitude,
-            'owner_id': self.id,
+            'owner_id': self.owner_id,
             'amenities': self.amenities,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
