@@ -19,7 +19,6 @@ header {
     background-color: #FFA500;
     color: #fff;
     padding: 1rem;
-    display: flexbox;
 }
 
 nav a {
@@ -104,4 +103,34 @@ footer {
     border-radius: 0%;
     box-shadow: inset;
     max-width: fit-content;
+}
+/* formulaire */
+.add-review {
+    margin: 20px;
+    padding: 10%;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.form input,
+.form textarea,
+.form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 0.5%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form button {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.form button:hover {
+    background-color: red;
 }
