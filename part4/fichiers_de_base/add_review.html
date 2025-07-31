@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!-- fichier de base 
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,23 +9,73 @@
 </head>
 <body>
     <main>
-        <!-- Add something to identify the place you're reviewing -->
+         // Add something to identify the place you're reviewing
         <form id="review-form">
             <h2>Add a Review</h2>
             <label for="review">Your Review:</label>
             <textarea id="review" name="review" required></textarea>
             <label for="rating">Rating:</label>
             <select id="rating" name="rating" required>
-                <!-- Options for rating -->
+                // Options for rating
             </select>
             <button type="submit">Submit Review</button>
         </form>
     </main>
 
-        <!-- rajout de footer dans toutes les pages -->
+        // rajout de footer dans toutes les pages 
     
     <footer>
         <p>&copy; © 2025 All Rights Reserved</p>
+    </footer>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" id="back-link">Back to place</a>
+        </nav>
+    </header>
+    <main>
+        <div class="place-info" id="place-info">
+            </div>
+
+        <div id="success-message" class="success-message" style="display: none;"></div>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <form id="review-form" class="review-form">
+            <h2>Add a Review</h2>
+            <label for="review">Your Review:</label>
+            <textarea id="review" name="review" required minlength="10" maxlength="1000"></textarea>
+            <div id="character-count" class="character-count">0/1000 characters</div>
+            
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="" disabled selected>Select a rating</option>
+                <option value="1">1 Star</option>
+                <option value="2">2 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="5">5 Stars</option>
+            </select>
+            <button type="submit">Submit Review</button>
+        </form>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 All Rights Reserved</p>
     </footer>
     
     <script src="scripts.js"></script>
