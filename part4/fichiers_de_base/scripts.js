@@ -4,28 +4,26 @@ let currentPlaceId = null;
 
 // === DOM Ready ===
 document.addEventListener('DOMContentLoaded', () => {
+    // Code pour la page de login (non modifié)
     const loginForm = document.getElementById('login-form');
-
     if (loginForm) {
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
             await loginUser(email, password);
         });
     }
 
-    // Pour pages de lieu ou d’avis uniquement :
+    // Pour pages de lieu ou d’avis
     currentPlaceId = getPlaceIdFromURL();
 
     if (currentPlaceId) {
         authToken = checkAuthentication();
-        setupBackLink();
+        setupBackLink(); // Cette fonction est pour une page 'review' mais je la garde au cas où
         setupCharacterCounter();
         setupFormSubmission();
-        loadPlaceInfo();
+        loadPlaceInfo(); // Appel principal pour charger les infos et les avis
     }
 });
 
@@ -56,11 +54,19 @@ function getCookie(name) {
 function checkAuthentication() {
     const token = getCookie('token');
     const loginLink = document.getElementById('login-link');
-    if (loginLink) loginLink.style.display = token ? 'none' : 'block';
+    if (loginLink) loginLink.textContent = token ? 'Logout' : 'Login';
+    // Gérer la déconnexion si l'utilisateur clique sur "Logout"
+    if (loginLink && token) {
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+            window.location.reload();
+        });
+    }
     return token;
 }
 
-// === Task 1 & 2 - Lieux ===
+// === Task 1 & 2 - Lieux (non modifié) ===
 async function fetchPlaces(token) {
     try {
         const response = await fetch('https://your-api-url/places', {
@@ -102,7 +108,7 @@ document.getElementById('price-filter')?.addEventListener('change', (event) => {
     });
 });
 
-// === Task 3 & 4 - Détails & Avis ===
+// === Task 3 & 4 - Détails & Avis (modifié) ===
 function getPlaceIdFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id') || urlParams.get('placeId');
@@ -143,14 +149,20 @@ function setupFormSubmission() {
 
             if (!reviewText) return showError('Please enter a review before submitting.');
             if (!rating) return showError('Please select a rating before submitting.');
+            if (!authToken) return showError('You must be logged in to submit a review.');
 
             await submitReview(authToken, currentPlaceId, reviewText, rating);
         });
     }
 }
 
+// Fonction MODIFIÉE pour charger les infos du lieu
 async function loadPlaceInfo() {
-    const placeInfoDiv = document.getElementById('place-info');
+    const placeDetailsDiv = document.getElementById('place-details');
+    if (!currentPlaceId) {
+        placeDetailsDiv.innerHTML = '<h2>Place not found.</h2>';
+        return;
+    }
 
     try {
         const response = await fetch(`/api/places/${currentPlaceId}`, {
@@ -163,23 +175,64 @@ async function loadPlaceInfo() {
 
         if (response.ok) {
             const placeData = await response.json();
-            placeInfoDiv.innerHTML = `
-                <h3>Reviewing: ${escapeHtml(placeData.name || 'Unknown Place')}</h3>
-                <p>${escapeHtml(placeData.description?.substring(0, 150) || 'No description available')}${placeData.description?.length > 150 ? '...' : ''}</p>
+            // Génère le HTML pour les détails du lieu
+            placeDetailsDiv.innerHTML = `
+                <h2>${escapeHtml(placeData.name || 'Beautiful Beach House')}</h2>
+                <p><strong>Host:</strong> ${escapeHtml(placeData.host || 'John Doe')}</p>
+                <p><strong>Price per night:</strong> $${escapeHtml(placeData.price || '150')}</p>
+                <p><strong>Description:</strong> ${escapeHtml(placeData.description || 'A beautiful beach house...')}</p>
+                <p><strong>Amenities:</strong> ${escapeHtml(placeData.amenities?.join(', ') || 'WiFi, Pool, Air Conditioning')}</p>
             `;
+            // Charge les avis
+            loadReviews(placeData.reviews);
         } else {
-            placeInfoDiv.innerHTML = `
-                <h3>Reviewing Place ID: ${currentPlaceId}</h3>
+            placeDetailsDiv.innerHTML = `
+                <h2>Place ID: ${currentPlaceId}</h2>
                 <p>Unable to load place details</p>
             `;
         }
     } catch (error) {
         console.error('Error loading place info:', error);
-        placeInfoDiv.innerHTML = `
-            <h3>Reviewing Place ID: ${currentPlaceId}</h3>
+        placeDetailsDiv.innerHTML = `
+            <h2>Place ID: ${currentPlaceId}</h2>
             <p>Unable to load place details</p>
         `;
     }
+}
+
+// Fonction NOUVELLE pour afficher les étoiles
+function renderStars(rating) {
+    let stars = '';
+    for (let i = 0; i < 5; i++) {
+        if (i < rating) {
+            stars += '<span class="filled-star">★</span>';
+        } else {
+            stars += '<span>★</span>';
+        }
+    }
+    return `<div class="star-rating">${stars}</div>`;
+}
+
+// Fonction NOUVELLE pour afficher les avis
+function loadReviews(reviews) {
+    const reviewsListDiv = document.getElementById('reviews-list');
+    reviewsListDiv.innerHTML = ''; // Vide les avis précédents
+
+    if (!reviews || reviews.length === 0) {
+        reviewsListDiv.innerHTML = '<p>No reviews yet.</p>';
+        return;
+    }
+
+    reviews.forEach(review => {
+        const reviewCard = document.createElement('div');
+        reviewCard.className = 'review-card';
+        reviewCard.innerHTML = `
+            <h4>${escapeHtml(review.userName || 'Anonymous')}:</h4>
+            <p>${escapeHtml(review.text)}</p>
+            <p>Rating: ${renderStars(review.rating)}</p>
+        `;
+        reviewsListDiv.appendChild(reviewCard);
+    });
 }
 
 async function submitReview(token, placeId, reviewText, rating) {
@@ -215,7 +268,13 @@ async function submitReview(token, placeId, reviewText, rating) {
 }
 
 // === Feedback / UI Utilities ===
+function hideMessages() {
+    document.getElementById('success-message').style.display = 'none';
+    document.getElementById('error-message').style.display = 'none';
+}
+
 async function handleResponse(response) {
+    // ... (votre code existant pour gérer les réponses)
     if (response.ok) {
         showSuccess('Review submitted successfully! Redirecting to place details...');
         document.getElementById('review-form').reset();
@@ -261,4 +320,14 @@ function showError(message) {
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 }

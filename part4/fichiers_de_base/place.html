@@ -7,27 +7,51 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <img src="https://via.placeholder.com/100x40?text=hbnb" alt="hbnb logo">
+        </div>
+        <nav>
+            <a id="login-link" href="login.html">Login</a>
+        </nav>
+    </header>
+
     <main>
         <section id="place-details">
-            <!-- Place details will be populated dynamically -->
-        </section>
-        <section id="reviews">
-            <!-- Reviews will be populated dynamically -->
-        </section>
+            </section>
+        
+        <h2 class="reviews-title">Reviews</h2>
+        <section id="reviews-list">
+            </section>
+
         <section id="add-review">
             <h2>Add a Review</h2>
             <form id="review-form">
-                <label for="review-text">Review:</label>
-                <textarea id="review-text" name="review-text" required></textarea>
+                <div class="message-container">
+                    <p id="success-message" class="success-message" style="display:none;"></p>
+                    <p id="error-message" class="error-message" style="display:none;"></p>
+                </div>
+                <label for="review">Review:</label>
+                <textarea id="review" name="review" maxlength="1000" required></textarea>
+                <p id="character-count" class="character-count">0/1000 characters</p>
                 
-                <button type="submit">Submit</button>
+                <label for="rating">Rating:</label>
+                <select id="rating" name="rating" required>
+                    <option value="">Select a rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+
+                <button type="submit">Submit Review</button>
             </form>
         </section>
     </main>
-    <!-- rajout de footer dans toutes les pages -->
     
     <footer>
-        <p>&copy; © 2025 All Rights Reserved</p>
+        <p>&copy; 2024 HBnB Evolution. All rights reserved.</p>
     </footer>
 
     <script src="scripts.js"></script>
